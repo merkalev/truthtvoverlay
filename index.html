@@ -291,12 +291,13 @@ function buildTicker(text, speed){
   track.appendChild(seg1);
   track.appendChild(seg2);
 
-  // measure width of ONE segment to set animation duration based on speed
-  requestAnimationFrame(() => {
-    const segWidth = seg1.getBoundingClientRect().width + 80; // + padding-right
-    const duration = segWidth / speed;
-    track.style.animationDuration = duration + 's';
-  });
+  // Measure width of ONE segment to set animation duration based on speed.
+  // Safe to measure synchronously here because init() already awaited
+  // document.fonts.ready before calling this — text is laid out in its
+  // final font, so this width is accurate (no more post-swap jump/snap).
+  const segWidth = seg1.getBoundingClientRect().width + 80; // + padding-right
+  const duration = segWidth / speed;
+  track.style.animationDuration = duration + 's';
 }
 
 const DESIGN_WIDTH = 921.9;
@@ -330,8 +331,16 @@ function checkFontLoaded(){
 }
 
 async function init(){
-  document.fonts.ready.then(checkFontLoaded);
   const cfg = await loadConfig();
+
+  // CRITICAL: wait for the real webfont to finish loading before measuring
+  // anything. If we build the ticker or autofit headlines against the
+  // fallback font's widths, the numbers are wrong the instant Neue Haas
+  // swaps in — causing a visible jump/snap in the ticker loop and
+  // slightly-off autofit sizing. document.fonts.ready resolves once every
+  // requested @font-face has finished loading (or failed + fell back).
+  await document.fonts.ready;
+  checkFontLoaded();
 
   document.getElementById('headline-main').textContent = cfg.headlineMain;
   document.getElementById('headline-sub').textContent  = cfg.headlineSub;
