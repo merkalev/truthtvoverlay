@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>truth.tv Overlay</title>
+
+<link href="https://fonts.cdnfonts.com/css/neue-haas-grotesk-display-pro" rel="stylesheet">
+
+<style>
+  :root{
+    --red-breaking: #cb3233;
+    --red-logo: #c22026;
+    --ticker-bg: rgba(17,19,33,0.29);
+    --dark-bar: #231f20;
+    --black-bar: #000101;
+    --white: #ffffff;
+    --off-white: #e2ece9;
+    --credit-white: #e1edf8;
+
+    --font-medium: 'Neue Haas Grotesk Display Pro', 'Neue Haas Display Medium', 'Helvetica Now Text', 'Inter', Arial, sans-serif;
+    --font-black: 'Neue Haas Grotesk Display Pro', 'Neue Haas Display Black', 'Helvetica Now Text', 'Inter', Arial, sans-serif;
+    --font-italic: 'Neue Haas Grotesk Display Pro', 'Neue Haas Display Medium Italic', 'Helvetica Now Text', 'Inter', Arial, sans-serif;
+  }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:transparent;
+    width:921.9px;
+    height:518.93px;
+    overflow:hidden;
+    font-family: var(--font-medium);
+  }
+
+  #stage{
+    position:relative;
+    width:921.9px;
+    height:518.93px;
+  }
+
+  /* ===== BREAKING TAG ===== */
+  #breaking-tag{
+    position:absolute;
+    left:61.5px;
+    top:355.2px;
+    width:148.1px;
+    height:23.8px;
+    background:var(--red-breaking);
+    display:flex;
+    align-items:center;
+    padding-left: 12px;
+    box-sizing:border-box;
+  }
+  #breaking-tag span{
+    color:var(--off-white);
+    font-size:16.31px;
+    font-weight:500;
+    letter-spacing:0.5px;
+  }
+
+  /* ===== HEADLINE BOX ===== */
+  #headline-box{
+    position:absolute;
+    left:61.5px;
+    top:379.1px;
+    width:685.1px;
+    height:60.5px;
+    background:var(--white);
+    box-sizing:border-box;
+    padding: 6px 14px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    overflow:hidden;
+  }
+  #headline-main{
+    color:#231f20;
+    font-size:19.3px;
+    font-weight:500;
+    line-height:1.18;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  #headline-sub{
+    color:#231f20;
+    font-size:19.3px;
+    font-weight:500;
+    line-height:1.18;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  /* ===== LOGO BLOCK (right) ===== */
+  #live-news{
+    position:absolute;
+    left:769.5px;
+    top:356.4px;
+    width:105.4px;
+    height:17.4px;
+    background:var(--white);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  #live-news span{
+    color:#000101;
+    font-size:12.41px;
+    font-weight:500;
+    letter-spacing:0.5px;
+  }
+
+  #truth-logo{
+    position:absolute;
+    left:769.5px;
+    top:374px;
+    width:105.4px;
+    height:64.2px;
+    background:var(--red-logo);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+  }
+  #truth-logo .truth{
+    color:var(--white);
+    font-size:25px;
+    font-weight:800;
+    font-family: var(--font-black);
+    line-height:1;
+  }
+  #truth-logo .tv{
+    color:var(--white);
+    font-size:18.1px;
+    font-style:italic;
+    font-weight:500;
+    font-family: var(--font-italic);
+    line-height:1;
+    margin-top:2px;
+    align-self:flex-start;
+    margin-left: 22px;
+  }
+
+  #provided-by{
+    position:absolute;
+    left:769.5px;
+    top:438.4px;
+    width:105.4px;
+    height:10.3px;
+    background:var(--dark-bar);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  #provided-by span{
+    color:var(--credit-white);
+    font-size:7.4px;
+    font-weight:500;
+    letter-spacing:0.5px;
+  }
+
+  /* ===== TICKER BAR ===== */
+  #ticker-bar{
+    position:absolute;
+    left:61.5px;
+    top:449.9px;
+    width:813.4px;
+    height:35.4px;
+    background:var(--ticker-bg);
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+  }
+  #ticker-track{
+    display:inline-flex;
+    white-space:nowrap;
+    will-change:transform;
+    animation: scroll-ticker linear infinite;
+  }
+  #ticker-track span.item{
+    color:var(--off-white);
+    font-size:16.31px;
+    font-weight:500;
+    padding-right:80px;
+  }
+
+  @keyframes scroll-ticker{
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+</style>
+</head>
+<body>
+
+<div id="stage">
+
+  <div id="breaking-tag"><span>BREAKING</span></div>
+
+  <div id="headline-box">
+    <div id="headline-main"></div>
+    <div id="headline-sub"></div>
+  </div>
+
+  <div id="live-news"><span>LIVE NEWS</span></div>
+
+  <div id="truth-logo">
+    <div class="truth">truth.</div>
+    <div class="tv">tv</div>
+  </div>
+
+  <div id="provided-by"><span>PROVIDED BY XENIT</span></div>
+
+  <div id="ticker-bar">
+    <div id="ticker-track"></div>
+  </div>
+
+</div>
+
+<script>
+/* =========================================================
+   EDIT YOUR CONTENT HERE — this is the only section you need
+   ========================================================= */
+const CONFIG = {
+  headlineMain: "THERE IS A FUCKING BLUE BLOB",
+  headlineSub:  "ignore the fucking empty space",
+  tickerText:   "INSERT FUCKING BOTTOM HEADLINES — UPDATE ME IN config.json OR RIGHT HERE",
+  tickerSpeedPxPerSecond: 90   // higher = faster scroll
+};
+/* ========================================================= */
+
+// Try to load an external config.json if present (so you can edit
+// text without touching this file at all). Falls back to CONFIG above.
+async function loadConfig(){
+  try{
+    const res = await fetch('config.json', {cache:'no-store'});
+    if(res.ok){
+      const json = await res.json();
+      return { ...CONFIG, ...json };
+    }
+  }catch(e){ /* no config.json found, use defaults above */ }
+  return CONFIG;
+}
+
+function autoFitText(el, maxWidth){
+  // Shrinks font-size step by step until the text fits on one line,
+  // so long headlines never overflow the white box.
+  let size = parseFloat(getComputedStyle(el).fontSize);
+  const minSize = 12;
+  el.style.whiteSpace = 'nowrap';
+  while (el.scrollWidth > maxWidth && size > minSize){
+    size -= 0.5;
+    el.style.fontSize = size + 'px';
+  }
+}
+
+function buildTicker(text, speed){
+  const track = document.getElementById('ticker-track');
+  track.innerHTML = '';
+
+  // duplicate content twice so the loop is seamless (translateX -50%)
+  const seg1 = document.createElement('span');
+  seg1.className = 'item';
+  seg1.textContent = text;
+
+  const seg2 = document.createElement('span');
+  seg2.className = 'item';
+  seg2.textContent = text;
+
+  track.appendChild(seg1);
+  track.appendChild(seg2);
+
+  // measure width of ONE segment to set animation duration based on speed
+  requestAnimationFrame(() => {
+    const segWidth = seg1.getBoundingClientRect().width + 80; // + padding-right
+    const duration = segWidth / speed;
+    track.style.animationDuration = duration + 's';
+  });
+}
+
+async function init(){
+  const cfg = await loadConfig();
+
+  document.getElementById('headline-main').textContent = cfg.headlineMain;
+  document.getElementById('headline-sub').textContent  = cfg.headlineSub;
+
+  // autofit both headline lines so they never overflow the white box
+  const box = document.getElementById('headline-box');
+  const innerWidth = box.clientWidth - 28; // minus left/right padding
+  autoFitText(document.getElementById('headline-main'), innerWidth);
+  autoFitText(document.getElementById('headline-sub'), innerWidth);
+
+  buildTicker(cfg.tickerText, cfg.tickerSpeedPxPerSecond || 90);
+}
+
+init();
+
+// Optional: auto-refresh content every 10s by re-reading config.json,
+// so you can update headlines live without restarting OBS.
+setInterval(async () => {
+  const cfg = await loadConfig();
+  const mainEl = document.getElementById('headline-main');
+  const subEl  = document.getElementById('headline-sub');
+  const tickerEl = document.getElementById('ticker-track');
+
+  if(mainEl.textContent !== cfg.headlineMain || subEl.textContent !== cfg.headlineSub){
+    mainEl.style.fontSize = '19.3px';
+    subEl.style.fontSize = '19.3px';
+    mainEl.textContent = cfg.headlineMain;
+    subEl.textContent = cfg.headlineSub;
+    const box = document.getElementById('headline-box');
+    const innerWidth = box.clientWidth - 28;
+    autoFitText(mainEl, innerWidth);
+    autoFitText(subEl, innerWidth);
+  }
+
+  const currentTickerText = cfg.tickerText;
+  if(tickerEl.children[0] && tickerEl.children[0].textContent !== currentTickerText){
+    buildTicker(currentTickerText, cfg.tickerSpeedPxPerSecond || 90);
+  }
+}, 10000);
+</script>
+
+</body>
+</html>
