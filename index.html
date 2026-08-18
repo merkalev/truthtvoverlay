@@ -4,9 +4,31 @@
 <meta charset="UTF-8">
 <title>truth.tv Overlay</title>
 
-<link href="https://fonts.cdnfonts.com/css/neue-haas-grotesk-display-pro" rel="stylesheet">
-
 <style>
+  @font-face{
+    font-family:'Neue Haas Grotesk Display Pro';
+    src: url('fonts/NeueHaasDisplay-Mediu.woff2') format('woff2'),
+         url('fonts/NeueHaasDisplay-Mediu.woff') format('woff');
+    font-weight: 400; /* "Mediu" cut = normal weight per licensed stylesheet */
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face{
+    font-family:'Neue Haas Grotesk Display Pro';
+    src: url('fonts/NeueHaasDisplay-MediumItalic.woff2') format('woff2'),
+         url('fonts/NeueHaasDisplay-MediumItalic.woff') format('woff');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+  }
+  @font-face{
+    font-family:'Neue Haas Grotesk Display Pro';
+    src: url('fonts/NeueHaasDisplay-Black.woff2') format('woff2'),
+         url('fonts/NeueHaasDisplay-Black.woff') format('woff');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+  }
   :root{
     --red-breaking: #cb3233;
     --red-logo: #c22026;
@@ -54,7 +76,7 @@
   #breaking-tag span{
     color:var(--off-white);
     font-size:16.31px;
-    font-weight:500;
+    font-weight:400;
     letter-spacing:0.5px;
   }
 
@@ -72,11 +94,13 @@
     flex-direction:column;
     justify-content:center;
     overflow:hidden;
+    visibility:hidden; /* revealed by JS once autofit has run, prevents overflow flash */
   }
+  #headline-box.ready{ visibility:visible; }
   #headline-main{
     color:#231f20;
     font-size:19.3px;
-    font-weight:500;
+    font-weight:400;
     line-height:1.18;
     white-space:nowrap;
     overflow:hidden;
@@ -85,7 +109,7 @@
   #headline-sub{
     color:#231f20;
     font-size:19.3px;
-    font-weight:500;
+    font-weight:400;
     line-height:1.18;
     white-space:nowrap;
     overflow:hidden;
@@ -107,7 +131,7 @@
   #live-news span{
     color:#000101;
     font-size:12.41px;
-    font-weight:500;
+    font-weight:400;
     letter-spacing:0.5px;
   }
 
@@ -126,7 +150,7 @@
   #truth-logo .truth{
     color:var(--white);
     font-size:25px;
-    font-weight:800;
+    font-weight:900;
     font-family: var(--font-black);
     line-height:1;
   }
@@ -134,7 +158,7 @@
     color:var(--white);
     font-size:18.1px;
     font-style:italic;
-    font-weight:500;
+    font-weight:400;
     font-family: var(--font-italic);
     line-height:1;
     margin-top:2px;
@@ -156,7 +180,7 @@
   #provided-by span{
     color:var(--credit-white);
     font-size:7.4px;
-    font-weight:500;
+    font-weight:400;
     letter-spacing:0.5px;
   }
 
@@ -181,7 +205,7 @@
   #ticker-track span.item{
     color:var(--off-white);
     font-size:16.31px;
-    font-weight:500;
+    font-weight:400;
     padding-right:80px;
   }
 
@@ -237,8 +261,12 @@ async function loadConfig(){
     if(res.ok){
       const json = await res.json();
       return { ...CONFIG, ...json };
+    } else {
+      console.warn('[config] config.json responded with status', res.status, '- using inline CONFIG defaults');
     }
-  }catch(e){ /* no config.json found, use defaults above */ }
+  }catch(e){
+    console.warn('[config] Could not fetch config.json (likely opened via file:// or hosting issue). Using inline CONFIG defaults. Error:', e.message);
+  }
   return CONFIG;
 }
 
@@ -278,7 +306,22 @@ function buildTicker(text, speed){
   });
 }
 
+function checkFontLoaded(){
+  // Logs to console (visible via OBS Browser Source > right-click > Interact > F12,
+  // or just open index.html in a normal Chrome tab and hit F12) so you can confirm
+  // whether the CDN font actually loaded or it's silently using the fallback.
+  if(document.fonts && document.fonts.check){
+    const loaded400 = document.fonts.check('400 16px "Neue Haas Grotesk Display Pro"');
+    const loaded900 = document.fonts.check('900 16px "Neue Haas Grotesk Display Pro"');
+    console.log('[font-check] Mediu(400) loaded:', loaded400, '| Black(900) loaded:', loaded900);
+    if(!loaded400 && !loaded900){
+      console.warn('[font-check] Neue Haas NOT loaded — currently showing fallback font. Check network tab for blocked requests to fonts.cdnfonts.com');
+    }
+  }
+}
+
 async function init(){
+  document.fonts.ready.then(checkFontLoaded);
   const cfg = await loadConfig();
 
   document.getElementById('headline-main').textContent = cfg.headlineMain;
@@ -289,6 +332,7 @@ async function init(){
   const innerWidth = box.clientWidth - 28; // minus left/right padding
   autoFitText(document.getElementById('headline-main'), innerWidth);
   autoFitText(document.getElementById('headline-sub'), innerWidth);
+  box.classList.add('ready');
 
   buildTicker(cfg.tickerText, cfg.tickerSpeedPxPerSecond || 90);
 }
