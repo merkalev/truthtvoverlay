@@ -48,16 +48,22 @@
     margin:0;
     padding:0;
     background:transparent;
-    width:921.9px;
-    height:518.93px;
+    width:100vw;
+    height:100vh;
     overflow:hidden;
     font-family: var(--font-medium);
   }
 
   #stage{
-    position:relative;
+    position:absolute;
+    top:0;
+    left:0;
     width:921.9px;
     height:518.93px;
+    transform-origin: top left;
+    /* JS sets the scale() transform below to fill whatever the actual
+       browser/OBS source window size is, while keeping every element's
+       original px position/size (and thus this whole file) unchanged. */
   }
 
   /* ===== BREAKING TAG ===== */
@@ -305,6 +311,22 @@ function buildTicker(text, speed){
     track.style.animationDuration = duration + 's';
   });
 }
+
+const DESIGN_WIDTH = 921.9;
+const DESIGN_HEIGHT = 518.93;
+
+function scaleStage(){
+  const stage = document.getElementById('stage');
+  const scaleX = window.innerWidth / DESIGN_WIDTH;
+  const scaleY = window.innerHeight / DESIGN_HEIGHT;
+  // 'cover' behavior: fills the whole OBS canvas edge to edge, cropping
+  // whichever dimension overflows if the aspect ratio doesn't match.
+  // Swap Math.max -> Math.min if you'd rather never crop (may letterbox).
+  const scale = Math.max(scaleX, scaleY);
+  stage.style.transform = `scale(${scale})`;
+}
+window.addEventListener('resize', scaleStage);
+scaleStage();
 
 function checkFontLoaded(){
   // Logs to console (visible via OBS Browser Source > right-click > Interact > F12,
